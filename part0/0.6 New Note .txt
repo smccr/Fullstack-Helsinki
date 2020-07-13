@@ -1,0 +1,16 @@
+title 0.6 New Note 
+
+note over Browser:
+POST request to new_note_spa 
+contains the new note as JSON-data.
+The JSON-data contains the content
+and date of the JSON-data.
+end note
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+Server-->Browser: [{ content: "single page app does not reload the whole page", date: "2109-05-25" }, ...]
+
+note over Browser:
+Browser executes the event handler
+that renders the new note to display
+end note
