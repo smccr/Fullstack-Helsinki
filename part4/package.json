@@ -1,0 +1,29 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smccr/Fullstack-Helsinki.git"
+  },
+  "author": "Sergio Mora",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smccr/Fullstack-Helsinki/issues"
+  },
+  "homepage": "https://github.com/smccr/Fullstack-Helsinki#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.25"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "nodemon": "^2.0.4"
+  }
+}
