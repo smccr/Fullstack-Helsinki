@@ -46,6 +46,11 @@ test(`Blog size should be ${initialBlogs.length}`, async () => {
   expect(response.body).toHaveLength(initialBlogs.length)
 })
 
+test(`Verifies unique post ID`, async () => {
+  const response = await api.get('/api/blogs')
+  response.body.map(blog => expect(blog.id).toBeDefined())
+})
+
 afterAll(() => {
     mongoose.connection.close()
   })
