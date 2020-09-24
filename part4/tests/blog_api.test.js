@@ -46,12 +46,12 @@ test(`Blog size should be ${initialBlogs.length}`, async () => {
   expect(response.body).toHaveLength(initialBlogs.length)
 })
 
-test(`Verifies unique post ID`, async () => {
+test('Verifies unique post ID', async () => {
   const response = await api.get('/api/blogs')
   response.body.map(blog => expect(blog.id).toBeDefined())
 })
 
-test(`Verifies the creation of a new blog post`, async () => {
+test('Verifies the creation of a new blog post', async () => {
   const blogPost = initialBlogs[0]
   const response = await api.post('/api/blogs')
     .send(blogPost)
@@ -61,6 +61,25 @@ test(`Verifies the creation of a new blog post`, async () => {
   const blogAdded = await Blog.find({})
   expect(blogAdded).toHaveLength(initialBlogs.length + 1)
 })
+
+test('Verifies that if the likes property is missing from the request', async () => {
+  const blogPost = {
+    title: 'Test blog for likes',
+    author: 'Test author for likes',
+    url: 'www.testurlforlikes.com'
+  }
+
+  const response = await api.post('/api/blogs')
+    .send(blogPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogAdded = await Blog.find({})
+  expect(blogAdded[initialBlogs.length].likes).toBe(0)
+})
+
+
+
 
 afterAll(() => {
   mongoose.connection.close()
