@@ -78,6 +78,15 @@ test('Verifies that if the likes property is missing from the request', async ()
   expect(blogAdded[initialBlogs.length].likes).toBe(0)
 })
 
+test('Verifies that if the title and url properties are missing from the request data', async () => {
+  const blogPost = {
+    author: 'Test author'
+  }
+
+  const response = await api.post('/api/blogs')
+    .send(blogPost)
+    .expect(400)
+})
 
 
 
