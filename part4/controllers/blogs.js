@@ -1,8 +1,9 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', {username: 1, name: 1, id: 1})
   response.json(blogs)
 })
 
@@ -11,8 +12,20 @@ blogsRouter.post('/', async (request, response) => {
   if (!(body.title && body.url)) {
     response.status(400).json({ error: "properties missing" })
   }
-  const blog = new Blog(body)
+
+  const user = await User.findById(body.userID)
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: user._id
+  })
+
   const blogSaved = await blog.save()
+  user.blogs = user.blogs.concat(blogSaved._id)
+  await user.save()
+  
   response.status(201).json(blogSaved)
 })
 
