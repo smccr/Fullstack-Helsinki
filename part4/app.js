@@ -9,7 +9,7 @@ const middleware = require('./utils/middleware')
 
 const mongoose = require('mongoose')
 
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true}).then(result => {
   console.log('connected to MongoDB')
 })
   .catch((error) => {
