@@ -9,17 +9,24 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
+  // Checks token
+  const token = request.token
+  const decodedToken = checkToken(token)
+
+  // Finds user
+  const userID = decodedToken.id
+  const user = await User.findById(userID)
+
   const { body } = request
   if (!(body.title && body.url)) {
     response.status(400).json({ error: "properties missing" })
   }
 
-  const user = await User.findById(body.userID)
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
     user: user._id
   })
 
@@ -46,14 +53,14 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   // Checks if belongs to the user
   if (blog.user.toString() === user._id.toString()) {
-    
+
     // Deletes from user blog list
     user.blogs = user.blogs.filter(blog => blog.toString() !== blogId)
-    
+
     // Saves the changes
     await Blog.findByIdAndDelete(blogId)
     await user.save()
-    
+
     response.status(204).end()
   } else {
     return response.status(403).end()
