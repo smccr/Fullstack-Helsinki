@@ -8,6 +8,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [blog, setBlog] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -20,6 +24,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -40,6 +45,16 @@ const App = () => {
     event.preventDefault()
     setUser(null)
     window.localStorage.removeItem('loggedBlogUser')
+  }
+  
+  const handleNewBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const savedBlog = await blogService.create({ title: title, author: author, url: url})
+      setBlogs(blogs.concat(savedBlog))
+    } catch(exception) {
+      console.log("Error addding blog")
+    }
   }
 
   const loginForm = () => (
@@ -65,6 +80,42 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
+    </form>
+    </div> 
+  )
+
+  const newBlogForm = () => (
+    <div>
+      <h1>Create new</h1>
+      <form onSubmit={handleNewBlog}>
+      <div>
+        Title:
+          <input
+          type="text"
+          value={title}
+          name="Title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        Author:
+          <input
+          type="text"
+          value={author}
+          name="Password"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        URL:
+          <input
+          type="text"
+          value={url}
+          name="url"
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
     </form>
     </div> 
   )
@@ -95,6 +146,7 @@ const App = () => {
     return (
       <div>
         {showName()}
+        {newBlogForm()}
         {showBlogs()}
       </div>
     )
