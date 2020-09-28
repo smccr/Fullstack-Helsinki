@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
   {
@@ -25,18 +26,41 @@ const initialBlogs = [
   }
 ]
 
+const newUser = {
+  username: "testuser",
+  password: "testpassword",
+  name: "Test User"
+}
+
+const userLogin = {
+  username: "testuser",
+  password: "testpassword"
+}
+
+let token = undefined
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   let blogObject = new Blog(initialBlogs[0])
   await blogObject.save()
 
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  blogObject2 = new Blog(initialBlogs[1])
+  await blogObject2.save()
 
-  blogObject = new Blog(initialBlogs[2])
-  await blogObject.save()
+  blogObject3 = new Blog(initialBlogs[2])
+  await blogObject3.save()
 
+  await api.post('/api/users').send(newUser)
+
+  const response = await api
+    .post('/api/login')
+    .send(userLogin)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  token = `bearer ${response.body.token}`
 })
 
 test(`Blog size should be ${initialBlogs.length}`, async () => {
@@ -53,7 +77,9 @@ test('Verifies unique post ID', async () => {
 
 test('Verifies the creation of a new blog post', async () => {
   const blogPost = initialBlogs[0]
-  const response = await api.post('/api/blogs')
+
+  await api.post('/api/blogs')
+    .set('Authorization', token)
     .send(blogPost)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -69,7 +95,8 @@ test('Verifies that if the likes property is missing from the request', async ()
     url: 'www.testurlforlikes.com'
   }
 
-  const response = await api.post('/api/blogs')
+  await api.post('/api/blogs')
+    .set('Authorization', token)
     .send(blogPost)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -83,12 +110,11 @@ test('Verifies that if the title and url properties are missing from the request
     author: 'Test author'
   }
 
-  const response = await api.post('/api/blogs')
+  await api.post('/api/blogs')
+    .set('Authorization', token)
     .send(blogPost)
     .expect(400)
 })
-
-
 
 afterAll(() => {
   mongoose.connection.close()
