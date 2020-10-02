@@ -76,3 +76,21 @@ describe('Checks the blog\'s url and likes are shown when the button is clicked'
     expect(component.container).toHaveTextContent('1')
   })
 })
+
+describe('If like button is clicked twice, the event handler is called twice', () => {
+
+  test('like button', () => {
+    const mockHandler = jest.fn()
+    const component = render(
+      <Blog blog={newBlog} loggedUser={user} handleLike={mockHandler}/>
+    )
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+
+    const likeButton = component.getByText('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
+})
