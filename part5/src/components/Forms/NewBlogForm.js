@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 const NewBlogForm = ({ createBlog, showMessage }) => {
   const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setblogAuthor] = useState('')
-  const [blogUrl, setblogUrl] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -16,8 +16,8 @@ const NewBlogForm = ({ createBlog, showMessage }) => {
       })
 
       setBlogTitle('')
-      setblogAuthor('')
-      setblogUrl('')
+      setBlogAuthor('')
+      setBlogUrl('')
       showMessage('Blog added successfully', 'success')
     } catch (exception) {
       showMessage('Failed to add a new blog', 'error')
@@ -31,6 +31,7 @@ const NewBlogForm = ({ createBlog, showMessage }) => {
         <div>
           title:
           <input
+            id="title"
             type="text"
             value={blogTitle}
             name="title"
@@ -40,19 +41,21 @@ const NewBlogForm = ({ createBlog, showMessage }) => {
         <div>
           author:
           <input
+            id="author"
             type="text"
             value={blogAuthor}
             name="author"
-            onChange={({ target }) => setblogAuthor(target.value)}
+            onChange={({ target }) => setBlogAuthor(target.value)}
           />
         </div>
         <div>
           url:
           <input
+            id="url"
             type="text"
             value={blogUrl}
             name="url"
-            onChange={({ target }) => setblogUrl(target.value)}
+            onChange={({ target }) => setBlogUrl(target.value)}
           />
         </div>
         <button type="submit">create</button>
