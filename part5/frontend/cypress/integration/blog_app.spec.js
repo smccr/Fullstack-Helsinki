@@ -84,6 +84,26 @@ describe('Blog app', function() {
       cy.contains('Blog title Blog author').contains('1 likes')
     })
   })
+
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpassword')
+      cy.get('#login').click()
+      cy.contains('New blog').click()
+      cy.get('#title').type('Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+    })
+
+    it('A blog can be deleted', function() {
+      cy.contains('Blog title Blog author').contains('view').click()
+      cy.contains('Blog title Blog author').contains('Remove').click()
+
+      cy.contains('Blog removed')
+    })
+  })
 })
 
 
