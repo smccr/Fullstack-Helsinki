@@ -46,8 +46,44 @@ describe('Blog app', function() {
       cy.get('#author').type('Blog author')
       cy.get('#url').type('www.blogurl.com')
       cy.get('#submitBlog').click()
+    })
+  })
 
-      cy.contains('Blog title Blog author')
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpassword')
+      cy.get('#login').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('New blog').click()
+      cy.get('#title').type('Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+    })
+  })
+
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpassword')
+      cy.get('#login').click()
+      cy.contains('New blog').click()
+      cy.get('#title').type('Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+    })
+
+    it('A blog can be liked', function() {
+      cy.contains('Blog title Blog author').contains('view').click()
+      cy.contains('Blog title Blog author').contains('0 likes')
+      cy.contains('Blog title Blog author').contains('like').click()
+      cy.contains('Blog title Blog author').contains('1 likes')
     })
   })
 })
+
+
