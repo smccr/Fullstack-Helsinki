@@ -104,6 +104,54 @@ describe('Blog app', function() {
       cy.contains('Blog removed')
     })
   })
+
+  describe.only('Blogs are ordered according to likes', function() {
+    beforeEach(function() {
+
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpassword')
+      cy.get('#login').click()
+
+      cy.contains('New blog').click()
+      cy.get('#title').type('First Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+
+      cy.get('#title').type('Second Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+
+      cy.get('#title').type('Third Blog title')
+      cy.get('#author').type('Blog author')
+      cy.get('#url').type('www.blogurl.com')
+      cy.get('#submitBlog').click()
+    })
+
+
+    // 3 1 2
+    it('Blogs are sorted by likes', function() {
+      cy.contains('Third Blog title').contains('view').click()
+      cy.contains('Third Blog title').contains('like').click()
+      cy.wait(200)
+      cy.contains('Third Blog title').contains('like').click()
+      cy.wait(200)
+
+      cy.contains('First Blog title').contains('view').click()
+
+      cy.contains('First Blog title').contains('like').click()
+      cy.wait(200)
+
+      cy.contains('Second Blog title').contains('view').click()
+
+      cy.get('ul.blogs').should($b => {
+        expect($b[0].childNodes[0].innerText).to.include('Third Blog')
+        expect($b[0].childNodes[1].innerText).to.include('First Blog')
+        expect($b[0].childNodes[2].innerText).to.include('Second Blog')
+      })
+    })
+  })
 })
 
 
