@@ -36,8 +36,6 @@ const reducer = (state = initialState, action) => {
     default:
       break;
   }
-  console.log('state now: ', state)
-  console.log('action', action)
 
   return state
 }

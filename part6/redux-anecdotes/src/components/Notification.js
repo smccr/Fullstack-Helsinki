@@ -9,8 +9,13 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
+
+  const styleNoBorder = {
+    padding: 10
+  }
+
   return (
-    <div style={style}>
+    <div style={notification === '' ? styleNoBorder : style}>
       {notification}
     </div>
   )
