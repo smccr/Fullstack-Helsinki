@@ -1,9 +1,7 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
 const asObject = (anecdote) => {
   return {
-    content: anecdote,
-    id: getId(),
+    content: anecdote.content,
+    id: anecdote.id,
     votes: 0
   }
 }
