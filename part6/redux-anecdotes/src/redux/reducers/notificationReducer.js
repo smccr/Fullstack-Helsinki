@@ -1,29 +1,27 @@
 const reducer = (state = '', action) => {
-  switch (action.type) {
-    case 'NEW_NOTIFICATION':
-      return action.data.content;
-    case 'REMOVE_NOTIFICATION':
-      return action.data.content;
-    default:
-      return state;
+  if(action.type === 'NOTIFICATION') {
+    return action.data.content;
+  } else {
+    return state;
   }
 }
 
-export const createNotification = (content) => {
-  return {
-    type: 'NEW_NOTIFICATION',
-    data: {
-      content: content
-    }
-  }
-}
-
-export const removeNotification = () => {
-  return {
-    type: 'REMOVE_NOTIFICATION',
-    data: {
-      content: ''
-    }
+export const setNotification = (content, time) => {
+  return dispatch => {
+    dispatch({
+      type: 'NOTIFICATION',
+      data: {
+        content: content
+      }
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'NOTIFICATION',
+        data: {
+          content: ''
+        }
+      })
+    }, time * 1000);
   }
 }
 
