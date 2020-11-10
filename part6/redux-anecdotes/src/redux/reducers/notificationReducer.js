@@ -6,6 +6,8 @@ const reducer = (state = '', action) => {
   }
 }
 
+let timeoutID
+
 export const setNotification = (content, time) => {
   return dispatch => {
     dispatch({
@@ -14,7 +16,8 @@ export const setNotification = (content, time) => {
         content: content
       }
     })
-    setTimeout(() => {
+    window.clearTimeout(timeoutID)
+    timeoutID = setTimeout(() => {
       dispatch({
         type: 'NOTIFICATION',
         data: {
