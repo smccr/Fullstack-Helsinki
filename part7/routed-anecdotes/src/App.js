@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route, Link, useRouteMatch
 } from "react-router-dom"
 
 const Menu = () => {
@@ -17,11 +17,27 @@ const Menu = () => {
   )
 }
 
+const Anecdote = ({ anecdote }) => {
+  if (anecdote === undefined) {
+    return (
+      <div>
+        <h1>Anecdote doesn't exist</h1>
+      </div>
+    )
+  }
+  return (<div>
+    <h1>{anecdote.content}</h1>
+    <h4>{`has ${anecdote.votes} votes`}</h4>
+    <h4>{`for more info see `}<a href={anecdote.info}>{anecdote.info}</a></h4>
+  </div>)
+
+}
+
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => <li key={anecdote.id} > <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
     </ul>
   </div>
 )
@@ -32,8 +48,8 @@ const About = () => (
     <p>According to Wikipedia:</p>
 
     <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
+    Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
+    such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
       An anecdote is "a story with a point."</em>
 
     <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
@@ -78,7 +94,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
         <button>create</button>
       </form>
@@ -126,20 +142,25 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useRouteMatch('/anecdotes/:id')
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      
+
       <Switch>
+        <Route path="/anecdotes/:id">
+          { match ? <Anecdote anecdote={anecdoteById(match.params.id)} /> : null }
+        </Route>
         <Route path="/create">
-        <CreateNew addNew={addNew} />
+          <CreateNew addNew={addNew} />
         </Route>
         <Route path="/about">
-        <About />
+          <About />
         </Route>
         <Route path="/">
-        <AnecdoteList anecdotes={anecdotes} />
+          <AnecdoteList anecdotes={anecdotes} />
         </Route>
       </Switch>
 
