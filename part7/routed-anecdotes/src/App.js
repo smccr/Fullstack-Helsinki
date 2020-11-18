@@ -66,7 +66,7 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  
+
   const content = useField('text')
   const author = useField('text')
   const info = useField('text')
@@ -85,13 +85,19 @@ const CreateNew = (props) => {
     props.notify(content.value)
   }
 
+  const reset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content}/>
+          <input {...content} />
         </div>
         <div>
           author
@@ -103,6 +109,9 @@ const CreateNew = (props) => {
         </div>
         <button>create</button>
       </form>
+      <button onClick={reset}>reset</button>
+
+
     </div>
   )
 
