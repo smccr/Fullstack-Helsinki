@@ -11,6 +11,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { setNotification } from './redux/reducers/notificationReducer';
+import { initializeBlogs } from './redux/reducers/blogReducer';
 
 import './components/Notification.css';
 
@@ -23,11 +24,11 @@ export const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(initialBlogs => setBlogs(initialBlogs));
-  }, []);
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
@@ -38,7 +39,6 @@ export const App = () => {
     }
   }, []);
 
-  const dispatch = useDispatch();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -95,16 +95,6 @@ export const App = () => {
     }
   };
 
-  const sortPosts = () => {
-    blogs.sort((a, b) => {
-      return b.likes - a.likes;
-    });
-  };
-
-  const addBlog = async (blogObject) => {
-    const returnedBlog = await blogService.create(blogObject);
-    setBlogs(blogs.concat(returnedBlog));
-  };
 
   return (
     <div>
@@ -125,12 +115,10 @@ export const App = () => {
           <button onClick={handleLogout}>logout</button>
 
           <Togglable buttonLabel="New blog" ref={blogFormRef}>
-            <NewBlogForm createBlog={addBlog} />
+            <NewBlogForm />
           </Togglable>
 
-          {sortPosts()}
           <Blogs
-            blogs={blogs}
             handleLike={handleLike}
             handleRemove={handleRemove}
             loggedUser={user}

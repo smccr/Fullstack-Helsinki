@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { setNotification } from '../../redux/reducers/notificationReducer';
+import { createBlog } from '../../redux/reducers/blogReducer';
 
 import { WAIT_TIME } from '../../App';
 
-const NewBlogForm = ({ createBlog }) => {
+const NewBlogForm = () => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
@@ -15,12 +16,14 @@ const NewBlogForm = ({ createBlog }) => {
   const addBlog = (event) => {
     event.preventDefault();
     try {
-      createBlog({
+      const newBlog = {
         title: blogTitle,
         author: blogAuthor,
         url: blogUrl,
         likes: 0
-      });
+      };
+      dispatch(createBlog(newBlog));
+
 
       setBlogTitle('');
       setBlogAuthor('');

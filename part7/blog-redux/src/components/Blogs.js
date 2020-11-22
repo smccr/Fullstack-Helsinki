@@ -1,11 +1,18 @@
 
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Blog from './Blog';
 import PropTypes from 'prop-types';
 
-const Blogs = ({ blogs, handleLike, handleRemove, loggedUser }) => {
+const Blogs = ({ handleLike, handleRemove, loggedUser }) => {
+  const blogs = useSelector(state => state.blog);
+
+  const sortBlogs = (a, b) => {
+    return b.likes - a.likes;
+  };
+
   return (
-    <ul className='blogs'>{blogs.map(blog =>
+    <ul className='blogs'>{blogs.sort(sortBlogs).map(blog =>
       <Blog
         key={blog.id}
         blog={blog}
