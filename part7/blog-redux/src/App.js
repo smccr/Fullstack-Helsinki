@@ -19,7 +19,6 @@ export const WAIT_TIME = 5;
 
 
 export const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -69,33 +68,6 @@ export const App = () => {
 
   const blogFormRef = React.createRef();
 
-  const handleLike = async (event, blogID) => {
-    event.preventDefault();
-    try {
-      const blog = blogs.find(b => b.id === blogID);
-      const blogPlusLike = { ...blog, likes: blog.likes + 1 };
-      await blogService.modify(blogPlusLike.id, blogPlusLike);
-      setBlogs(blogs.map(blog => blog.id !== blogID ? blog : blogPlusLike));
-    } catch (exception) {
-      dispatch(setNotification('Failed to add the like', 'error', WAIT_TIME));
-    }
-  };
-
-  const handleRemove = async (event, blogID) => {
-    event.preventDefault();
-    try {
-      const blogToRemove = blogs.find(blog => blog.id === blogID);
-      if (window.confirm(`Do you want to remove the blog ${blogToRemove.title} by ${blogToRemove.author} ?`)) {
-        await blogService.remove(blogID);
-        setBlogs(blogs.filter(blog => blog.id !== blogID));
-        dispatch(setNotification('Blog removed', 'success', WAIT_TIME));
-      }
-    } catch (exception) {
-      dispatch(setNotification('Failed to remove blog', 'error', WAIT_TIME));
-    }
-  };
-
-
   return (
     <div>
       <h1>Blogs</h1>
@@ -119,8 +91,6 @@ export const App = () => {
           </Togglable>
 
           <Blogs
-            handleLike={handleLike}
-            handleRemove={handleRemove}
             loggedUser={user}
           />
         </div>

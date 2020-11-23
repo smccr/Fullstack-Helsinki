@@ -6,10 +6,13 @@ const reducer = (state = [], action) => {
       return action.data;
     case 'CREATE_BLOG':
       return [...state, action.data];
+    case 'ADD_LIKE':
+      return state.map(blog => blog.id !== action.data.id ? blog : action.data);
+    case 'DELETE_BLOG':
+      return state.filter(blog => blog.id !== action.data);
     default:
       return state;
   }
-
 };
 
 export const initializeBlogs = () => {
@@ -28,6 +31,26 @@ export const createBlog = (content) => {
     dispatch({
       type: 'CREATE_BLOG',
       data: newBlog
+    });
+  };
+};
+
+export const deleteBlog = (blogID) => {
+  return async dispatch => {
+    await blogService.remove(blogID);
+    dispatch({
+      type: 'DELETE_BLOG',
+      data: blogID
+    });
+  };
+};
+
+export const addLike = (blog) => {
+  return async dispatch => {
+    const blogPlusLike = await blogService.modify(blog.id, blog);
+    dispatch({
+      type: 'ADD_LIKE',
+      data: blogPlusLike
     });
   };
 };
