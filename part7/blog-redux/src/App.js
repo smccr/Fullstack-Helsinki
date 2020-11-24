@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Blogs from './components/Blogs';
 import Notification from './components/Notification';
@@ -12,6 +12,7 @@ import loginService from './services/login';
 
 import { setNotification } from './redux/reducers/notificationReducer';
 import { initializeBlogs } from './redux/reducers/blogReducer';
+import { setUser } from './redux/reducers/userReducer';
 
 import './components/Notification.css';
 
@@ -21,8 +22,8 @@ export const WAIT_TIME = 5;
 export const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
 
+  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,25 +33,24 @@ export const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const loggedUser = JSON.parse(loggedUserJSON);
+      dispatch(setUser(loggedUser));
+      blogService.setToken(loggedUser.token);
     }
-  }, []);
-
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({
-        username, password,
+      const loggedUser = await loginService.login({
+        username, password
       });
 
       window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(loggedUser)
       );
-      blogService.setToken(user.token);
-      setUser(user);
+      blogService.setToken(loggedUser.token);
+      dispatch(setUser(loggedUser));
       setUsername('');
       setPassword('');
       dispatch(setNotification('Successful login', 'success', WAIT_TIME));
@@ -61,10 +61,11 @@ export const App = () => {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    setUser(null);
+    dispatch(setUser(null));
     window.localStorage.removeItem('loggedBlogappUser');
     dispatch(setNotification('Logged out', 'success', WAIT_TIME));
   };
+
 
   const blogFormRef = React.createRef();
 
