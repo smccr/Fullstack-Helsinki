@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
 
 import Blogs from './components/Blogs';
 import Notification from './components/Notification';
@@ -13,6 +14,8 @@ import loginService from './services/login';
 import { setNotification } from './redux/reducers/notificationReducer';
 import { initializeBlogs } from './redux/reducers/blogReducer';
 import { setUser } from './redux/reducers/userReducer';
+
+import Users, { } from './components/Users';
 
 import './components/Notification.css';
 
@@ -72,30 +75,33 @@ export const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-
       <Notification />
+      {user === null ? null : <div><p>{user.name} logged in</p>
+        <button onClick={handleLogout}>logout</button></div>}
+      <Switch>
+        <Route path='/users' >
+          <Users />
+        </Route>
+        <Route path='/'>
 
-      {user === null ?
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          setUsername={setUsername}
-          setPassword={setPassword}
-        /> :
-        <div>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          {user === null ?
+            <LoginForm
+              username={username}
+              password={password}
+              handleLogin={handleLogin}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            /> :
+            <div>
+              <Togglable buttonLabel="New blog" ref={blogFormRef}>
+                <NewBlogForm />
+              </Togglable>
 
-          <Togglable buttonLabel="New blog" ref={blogFormRef}>
-            <NewBlogForm />
-          </Togglable>
-
-          <Blogs
-            loggedUser={user}
-          />
-        </div>
-      }
+              <Blogs loggedUser={user} />
+            </div>
+          }
+        </Route>
+      </Switch>
     </div>
   );
 };
