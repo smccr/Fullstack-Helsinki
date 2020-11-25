@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 
+import Menu from './components/Menu';
 import Blogs from './components/Blogs';
 import Notification from './components/Notification';
 import LoginForm from './components/Forms/LoginForm';
@@ -74,10 +75,9 @@ export const App = () => {
 
   return (
     <div>
+      <Menu handleLogout={handleLogout}/>
       <h1>Blogs</h1>
       <Notification />
-      {user === null ? null : <div><p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button></div>}
       <Switch>
         <Route path='/users' >
           <Users />
