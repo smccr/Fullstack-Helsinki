@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addLike, deleteBlog } from '../redux/reducers/blogReducer';
 import { setNotification } from '../redux/reducers/notificationReducer';
@@ -14,7 +14,6 @@ const Blog = ({ blog, loggedUser }) => {
   };
 
   const dispatch = useDispatch();
-  const [visible, setVisible] = useState(false);
 
   const handleLike = (event, blog) => {
     event.preventDefault();
@@ -40,13 +39,13 @@ const Blog = ({ blog, loggedUser }) => {
 
   return (
     <div style={blogStyle} className='blog'>
-      <li>{`${blog.title} ${blog.author}`} <button onClick={() => setVisible(!visible)}>{visible ? <>hide</> : <>view</>}</button>  {visible ?
+      <li>{`${blog.title} ${blog.author}`}
         <div>
           <br /><a href={blog.url}>{blog.url}</a>
           <br />{blog.likes} likes <button onClick={(event) => { handleLike(event, blog); }}>like</button>
           <br />Added by {blog.user.name}
           <br />{blog.user.username === loggedUser.username ? <button onClick={(event) => { handleRemove(event, blog); }}>Remove</button> : null}
-        </div> : null}
+        </div>
       </li>
     </div>
   );
