@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Table } from 'react-bootstrap';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import userService from '../services/users';
 import User from './User';
@@ -20,7 +21,7 @@ const Users = () => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
+      <Table>
         <tbody>
           <tr>
             <td><strong>Name</strong></td>
@@ -35,7 +36,7 @@ const Users = () => {
             </tr>
           )}
         </tbody>
-      </table>
+      </Table>
       <Switch>
         <Route path='/users/:id'>
           {match ? <User blogs={blogByUserId(match.params.id)} /> : null}

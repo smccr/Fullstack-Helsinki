@@ -18,8 +18,6 @@ import { setUser } from './redux/reducers/userReducer';
 
 import Users, { } from './components/Users';
 
-import './components/Notification.css';
-
 export const WAIT_TIME = 5;
 
 
@@ -74,7 +72,7 @@ export const App = () => {
   const blogFormRef = React.createRef();
 
   return (
-    <div>
+    <div className="container">
       <Menu handleLogout={handleLogout}/>
       <h1>Blogs</h1>
       <Notification />

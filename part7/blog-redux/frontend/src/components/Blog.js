@@ -5,13 +5,12 @@ import { addLike, deleteBlog } from '../redux/reducers/blogReducer';
 import { setNotification } from '../redux/reducers/notificationReducer';
 
 import { WAIT_TIME } from '../App';
+import { Button } from 'react-bootstrap';
 
 const Blog = ({ blog, loggedUser }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
     marginBottom: 5
   };
 
@@ -44,6 +43,22 @@ const Blog = ({ blog, loggedUser }) => {
 
   return (
     <div style={blogStyle} className='blog'>
+      <li><h2>{blog.title}</h2>
+      <h3>By {blog.author}</h3>
+        <div>
+          <br /><a href={blog.url}>{blog.url}</a>
+          <br />{blog.likes} likes <Button size='sm' onClick={(event) => { handleLike(event, blog); }}>like</Button>
+          <br />Added by {blog.user.name}
+          <br />{blog.user.username === loggedUser.username ? <Button size='sm' onClick={(event) => { handleRemove(event, blog); }}>Remove</Button> : null}
+        </div>
+      </li>
+      <br />
+    </div>
+  );
+
+  /*
+  return (
+    <div style={blogStyle} className='blog'>
       <li><h2>{`${blog.title} ${blog.author}`}</h2>
         <div>
           <br /><a href={blog.url}>{blog.url}</a>
@@ -55,6 +70,7 @@ const Blog = ({ blog, loggedUser }) => {
       <br />
     </div>
   );
+  */
 };
 
 export default Blog;

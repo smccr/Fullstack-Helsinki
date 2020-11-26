@@ -1,4 +1,5 @@
 import React from 'react';
+import { ListGroup } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 const Comment = () => {
@@ -8,9 +9,10 @@ const Comment = () => {
     return null;
   }
   return(
-    <ul>
-      {commentaries.map(c => <li key={c.id} >{c.comment}</li>)}
-    </ul>
+   <ListGroup>
+     {commentaries.map(c => <ListGroup.Item as='li' key={c.id}>{c.comment}</ListGroup.Item>)}
+   </ListGroup> 
+    
   );
 };
 

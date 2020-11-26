@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Form, Button } from 'react-bootstrap'
 
 import { setNotification } from '../../redux/reducers/notificationReducer';
 import { createBlog } from '../../redux/reducers/blogReducer';
 
 import { WAIT_TIME } from '../../App';
+import { useHistory } from 'react-router-dom';
 
 const NewBlogForm = () => {
   const [blogTitle, setBlogTitle] = useState('');
@@ -12,6 +14,7 @@ const NewBlogForm = () => {
   const [blogUrl, setBlogUrl] = useState('');
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -28,6 +31,7 @@ const NewBlogForm = () => {
       setBlogTitle('');
       setBlogAuthor('');
       setBlogUrl('');
+      history.push('/')
       dispatch(setNotification('Blog added successfully', 'success', WAIT_TIME));
     } catch (exception) {
       dispatch(setNotification('Failed to add a new blog', 'error', WAIT_TIME));
@@ -37,41 +41,39 @@ const NewBlogForm = () => {
   return (
     <div>
       <h2>Create new</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
-            id="title"
+      <Form onSubmit={addBlog}>
+        <Form.Group>
+          <Form.Label>Title: </Form.Label>
+          <Form.Control
             type="text"
-            value={blogTitle}
+            id="title"
             name="title"
+            value={blogTitle}
             onChange={({ target }) => setBlogTitle(target.value)}
           />
-        </div>
-        <div>
-          author:
-          <input
-            id="author"
+          <Form.Label>Author: </Form.Label>
+          <Form.Control
             type="text"
-            value={blogAuthor}
+            id="author"
             name="author"
+            value={blogAuthor}
             onChange={({ target }) => setBlogAuthor(target.value)}
           />
-        </div>
-        <div>
-          url:
-          <input
-            id="url"
+          <Form.Label>URL: </Form.Label>
+          <Form.Control
             type="text"
+            id="url"
+            name="author"
             value={blogUrl}
-            name="url"
             onChange={({ target }) => setBlogUrl(target.value)}
           />
-        </div>
-        <button
-          id="submitBlog"
-          type="submit">create</button>
-      </form>
+          <br />
+          <Button
+            size='sm'
+            id="submitBlog"
+            type="submit">Create</Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 };

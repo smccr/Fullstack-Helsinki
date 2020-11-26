@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { Form, Button } from 'react-bootstrap'
+
 import { setNotification } from '../../redux/reducers/notificationReducer';
 import { createComment } from '../../redux/reducers/commentReducer';
 
@@ -26,20 +28,23 @@ const CommentForm = (id) => {
 
   return (
     <div>
-      <form onSubmit={addComment}>
-        <div>
-          <input
-            id="comment"
+      <Form onSubmit={addComment}>
+        <Form.Group>
+          <Form.Control
             type="text"
-            value={comment}
             name="comment"
+            value={comment}
             onChange={({ target }) => setComment(target.value)}
           />
-          <button
+          <br />
+          <Button
+            size='sm'
             id="submitComment"
-            type="submit">add comment</button>
-        </div>
-      </form>
+            type="submit">
+            add comment
+        </Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 };
