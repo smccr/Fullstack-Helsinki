@@ -1,7 +1,9 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { addLike, deleteBlog } from '../redux/reducers/blogReducer';
 import { setNotification } from '../redux/reducers/notificationReducer';
+
 import { WAIT_TIME } from '../App';
 
 const Blog = ({ blog, loggedUser }) => {
@@ -14,6 +16,7 @@ const Blog = ({ blog, loggedUser }) => {
   };
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleLike = (event, blog) => {
     event.preventDefault();
@@ -31,6 +34,8 @@ const Blog = ({ blog, loggedUser }) => {
       if (window.confirm(`Do you want to remove the blog ${blog.title} by ${blog.author} ?`)) {
         dispatch(deleteBlog(blog.id));
         dispatch(setNotification('Blog removed', 'success', WAIT_TIME));
+        history.push('/');
+
       }
     } catch (exception) {
       dispatch(setNotification('Failed to remove blog', 'error', WAIT_TIME));
@@ -39,7 +44,7 @@ const Blog = ({ blog, loggedUser }) => {
 
   return (
     <div style={blogStyle} className='blog'>
-      <li>{`${blog.title} ${blog.author}`}
+      <li><h2>{`${blog.title} ${blog.author}`}</h2>
         <div>
           <br /><a href={blog.url}>{blog.url}</a>
           <br />{blog.likes} likes <button onClick={(event) => { handleLike(event, blog); }}>like</button>
@@ -47,6 +52,7 @@ const Blog = ({ blog, loggedUser }) => {
           <br />{blog.user.username === loggedUser.username ? <button onClick={(event) => { handleRemove(event, blog); }}>Remove</button> : null}
         </div>
       </li>
+      <br />
     </div>
   );
 };

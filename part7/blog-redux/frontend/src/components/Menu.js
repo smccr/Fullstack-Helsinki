@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const Menu = ({handleLogout}) => {
+const Menu = ({ handleLogout }) => {
   const user = useSelector(state => state.user);
   const style = {
     paddingRight: 5,
