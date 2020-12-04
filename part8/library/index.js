@@ -111,14 +111,17 @@ const resolvers = {
       if(!(args.author || args.genre)) {
         return books
       }
+
+      let foundBooks = [...books]
+
       if(args.author) {
-        return books.filter(b => b.author === args.author)
+        foundBooks = foundBooks.filter(b => b.author === args.author)
       }
       
       if(args.genre) {
-        console.log("ARGS", args)
-        return books.filter(b => b.genres.includes(args.genre))
+        foundBooks = foundBooks.filter(b => b.genres.includes(args.genre))
       }
+      return foundBooks
     },
     allAuthors: () => authors
   },
