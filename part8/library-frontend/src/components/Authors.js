@@ -1,11 +1,11 @@
   
 import React, { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { ALL_AUTHORS } from '../queries'
 
 const Authors = (props) => {
   const [authors, setAuthors] = useState(null)
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_AUTHORS)
     useEffect(() => {
       if(result.data) {
         setAuthors(result.data.allAuthors)
