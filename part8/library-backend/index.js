@@ -122,7 +122,6 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: (root, args) => {
-
       if (!(args.author || args.genre)) {
         return books
       }
@@ -161,7 +160,6 @@ const resolvers = {
     },
 
     editAuthor: (root, args) => {
-      console.log("ARGS", args)
       const findAuthor = authors.find(a => a.name === args.name)
       if(findAuthor){
         const modifiedAuthor = {...findAuthor, born: args.setBornTo }

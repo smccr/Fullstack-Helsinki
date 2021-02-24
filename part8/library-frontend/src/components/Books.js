@@ -1,15 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
+  const [books, setBooks] = useState(null)
   const result = useQuery(ALL_BOOKS)
+
+  useEffect(() => {
+    if(result.data) {
+      setBooks(result.data.allBooks)
+    }
+  }, [result.data])
   
   if (!props.show) {
-    return null
+    return null;
   }
 
-  const books = [...result.data.allBooks]
+  if(!books) {
+    return null;
+  }
   
   return (
     <div>
