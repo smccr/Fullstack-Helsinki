@@ -1,11 +1,13 @@
 
 import React, { useEffect, useState } from 'react'
+import Select from 'react-select'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
 const Authors = (props) => {
   const [authors, setAuthors] = useState(null)
   const result = useQuery(ALL_AUTHORS)
+  const [options, setOptions] = useState(null)
 
   const [editAuthor, editAuthorResult] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }]
@@ -22,10 +24,17 @@ const Authors = (props) => {
   }, [result.data])
 
   useEffect(() => {
+    if (authors) {
+      const opts = authors.map(author => ({ value: author.name, label: author.name }))
+      setOptions(opts)
+    }
+  }, [authors])
+
+  useEffect(() => {
     if (editAuthorResult.data && editAuthorResult.data.editAuthor === null) {
       props.setError('author not found')
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editAuthorResult.data])
 
 
@@ -39,12 +48,13 @@ const Authors = (props) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    editAuthor({ variables: { name, year } })
+    editAuthor({ variables: { name: name.value, year } })
 
     setName('');
     setYear('');
   }
 
+  const handleNameChange = option => setName(option)
 
   return (
     <div>
@@ -73,10 +83,11 @@ const Authors = (props) => {
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name &nbsp;
-          <input
+          <Select
+            options={options}
+            onChange={handleNameChange}
             value={name}
-            onChange={({ target }) => setName(target.value)}
+            required
           />
         </div>
         <div>
@@ -85,12 +96,13 @@ const Authors = (props) => {
             type='number'
             value={year}
             onChange={({ target }) => setYear(Number(target.value))}
+            required
           />
         </div>
-
-
-
-        <button type='submit'>update author</button>
+        <button
+        type='submit'
+        disabled={ !year || !name }
+        >update author</button>
       </form>
 
     </div>
