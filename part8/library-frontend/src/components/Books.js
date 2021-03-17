@@ -7,19 +7,19 @@ const Books = (props) => {
   const result = useQuery(ALL_BOOKS)
 
   useEffect(() => {
-    if(result.data) {
+    if (result.data) {
       setBooks(result.data.allBooks)
     }
   }, [result.data])
-  
+
   if (!props.show) {
     return null;
   }
 
-  if(!books) {
+  if (!books) {
     return null;
   }
-  
+
   return (
     <div>
       <h2>books</h2>
@@ -38,7 +38,7 @@ const Books = (props) => {
           {books.map(a =>
             <tr key={a.title}>
               <td>{a.title}</td>
-              <td>{a.author}</td>
+              <td>{a.author.name}</td>
               <td>{a.published}</td>
             </tr>
           )}
