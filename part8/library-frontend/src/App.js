@@ -52,6 +52,7 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+        setError={notify}
       />
 
       {!token && <Login
