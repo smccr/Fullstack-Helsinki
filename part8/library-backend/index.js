@@ -100,6 +100,7 @@ const resolvers = {
       }
 
       if (args.genre) {
+        console.log(args.genre)
         if (!booksToReturn) {
           booksToReturn = await Book.find({ genres: { $in: args.genre } }).populate("author");
         } else {
