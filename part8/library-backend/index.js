@@ -157,10 +157,11 @@ const resolvers = {
         } else {
           const book = new Book({ ...args, author: author._id });
           await book.save();
+          const bookToReturn = await Book.findById(book._id).populate("author");
 
-          pubsub.publish('BOOK_ADDED', { bookAdded: book } )
+          pubsub.publish('BOOK_ADDED', { bookAdded: bookToReturn } )
 
-          return book;
+          return bookToReturn;
         }
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });

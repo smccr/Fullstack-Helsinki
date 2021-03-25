@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { useQuery, useSubscription } from '@apollo/client'
+import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState(null);
@@ -23,6 +23,15 @@ const Books = (props) => {
       setGenres(allGenres);
     }
   }, [result.data])
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      alert(`New book added
+      ${subscriptionData.data.bookAdded.title}
+      By ${subscriptionData.data.bookAdded.author.name}
+      `)
+    }
+  })
 
   if (!props.show) {
     return null;
