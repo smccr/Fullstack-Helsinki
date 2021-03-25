@@ -1,4 +1,6 @@
-const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server');
+const { ApolloServer, gql, UserInputError, AuthenticationError, PubSub } = require('apollo-server');
+const pubsub = new PubSub()
+
 const mongoose = require('mongoose');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
@@ -81,6 +83,10 @@ const typeDefs = gql`
       password: String!
     ): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
 const resolvers = {
@@ -130,12 +136,12 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser;
-      if(!currentUser) {
+      if (!currentUser) {
         throw new AuthenticationError("not authenticated");
       }
 
       const newBookAuthor = args.author;
-      
+
       try {
         const author = await Author.findOne({ name: newBookAuthor });
 
@@ -143,10 +149,19 @@ const resolvers = {
           const newAuthor = new Author({ name: newBookAuthor });
           await newAuthor.save();
           const book = new Book({ ...args, author: newAuthor._id });
-          return await book.save();
+          await book.save();
+
+          pubsub.publish('BOOK_ADDED', { bookAdded: book } )
+
+          return book;
+        } else {
+          const book = new Book({ ...args, author: author._id });
+          await book.save();
+
+          pubsub.publish('BOOK_ADDED', { bookAdded: book } )
+
+          return book;
         }
-        const book = new Book({ ...args, author: author._id });
-        return await book.save();
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });
       }
@@ -154,7 +169,7 @@ const resolvers = {
 
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser;
-      if(!currentUser) {
+      if (!currentUser) {
         throw new AuthenticationError("not authenticated");
       }
 
@@ -194,23 +209,28 @@ const resolvers = {
     },
 
     login: async (root, args) => {
-      const user = await User.findOne( {username: args.username} );
+      const user = await User.findOne({ username: args.username });
 
       const passwordCorrect = user === null
         ? false
         : await bcrypt.compare(args.password, user.password);
 
-        if (!(user && passwordCorrect)) {
-          throw new UserInputError("wrong credentials");
-        }
+      if (!(user && passwordCorrect)) {
+        throw new UserInputError("wrong credentials");
+      }
 
-        const userForToken = {
-          username: user.username,
-          favoriteGenre: user.favoriteGenre,
-          id: user._id
-        }
+      const userForToken = {
+        username: user.username,
+        favoriteGenre: user.favoriteGenre,
+        id: user._id
+      }
 
-        return { value: jwt.sign(userForToken, JWT_SECRET) }
+      return { value: jwt.sign(userForToken, JWT_SECRET) }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
     }
   }
 }
@@ -230,6 +250,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
