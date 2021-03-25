@@ -106,7 +106,6 @@ const resolvers = {
       }
 
       if (args.genre) {
-        console.log(args.genre)
         if (!booksToReturn) {
           booksToReturn = await Book.find({ genres: { $in: args.genre } }).populate("author");
         } else {
@@ -118,7 +117,9 @@ const resolvers = {
 
     },
 
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      return Author.find({}).populate("books")
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
@@ -128,8 +129,7 @@ const resolvers = {
     born: (root) => root.born,
     id: (root) => root.id,
     bookCount: async (root) => {
-      const booksByAuthor = await Book.find({ author: { $in: root.id } });
-      return booksByAuthor.length;
+      return root.bookCount;
     }
   },
 
@@ -146,7 +146,7 @@ const resolvers = {
         const author = await Author.findOne({ name: newBookAuthor });
 
         if (!author) {
-          const newAuthor = new Author({ name: newBookAuthor });
+          const newAuthor = new Author({ name: newBookAuthor, bookCount: 1 });
           await newAuthor.save();
           const book = new Book({ ...args, author: newAuthor._id });
           await book.save();
@@ -155,6 +155,8 @@ const resolvers = {
 
           return book;
         } else {
+          author.bookCount = author.bookCount + 1;
+          await author.save();
           const book = new Book({ ...args, author: author._id });
           await book.save();
           const bookToReturn = await Book.findById(book._id).populate("author");
