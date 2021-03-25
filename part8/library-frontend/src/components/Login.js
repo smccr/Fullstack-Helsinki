@@ -2,40 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../queries';
 
-const Login = (props) => {
+const Login = ({ notify, setToken, setPage, show }) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
-      props.setError(error.graphQLErrors[0].message)
+      notify(error.graphQLErrors[0].message)
     }
   })
 
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value
-      props.setToken(token)
+      setToken(token)
       localStorage.setItem('library-user-token', token)
     }
   }, [result.data]) // eslint-disable-line
 
   useEffect(() => {
     if (localStorage.getItem('library-user-token')) {
-      props.setToken(localStorage.getItem('library-user-token'));
+      setToken(localStorage.getItem('library-user-token'));
     }
-  }, [])
+  }, [setToken])
 
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
   const submit = async (event) => {
     event.preventDefault();
     login({ variables: { username, password } })
-    props.setPage('authors');
+    setPage('authors');
   }
 
   return (

@@ -11,15 +11,15 @@ import Recommendations from './components/Recommendations'
 const App = () => {
   const [token, setToken] = useState(null);
   const [page, setPage] = useState('authors')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
   const client = useApolloClient()
 
 
 
   const notify = (message) => {
-    setErrorMessage(message)
+    setMessage(message)
     setTimeout(() => {
-      setErrorMessage(null)
+      setMessage(null)
     }, 10000)
   }
 
@@ -39,26 +39,27 @@ const App = () => {
         {token && <button onClick={() => setPage('recommend')}>recommend</button>}
         {token && <button onClick={logout} >logout</button>}
       </div>
-      <Notify errorMessage={errorMessage} />
+      <Notify message={message} />
 
       <Authors
         show={page === 'authors'}
-        setError={notify}
+        notify={notify}
       />
 
       <Books
         show={page === 'books'}
+        notify={notify}
       />
 
       <NewBook
         show={page === 'add'}
-        setError={notify}
+        notify={notify}
       />
 
       {!token && <Login
         show={page === 'login'}
         setPage={setPage}
-        setError={notify}
+        notify={notify}
         setToken={setToken}
       />}
 

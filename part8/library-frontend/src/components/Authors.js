@@ -32,7 +32,7 @@ const Authors = (props) => {
 
   useEffect(() => {
     if (editAuthorResult.data && editAuthorResult.data.editAuthor === null) {
-      props.setError('author not found')
+      props.notify('author not found')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editAuthorResult.data])

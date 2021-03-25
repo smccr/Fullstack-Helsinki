@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery, useSubscription } from '@apollo/client'
+import { useQuery, useSubscription, useApolloClient } from '@apollo/client'
 import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 
-const Books = (props) => {
+const Books = ({ show, notify }) => {
   const [books, setBooks] = useState(null);
   const result = useQuery(ALL_BOOKS);
   const [genres, setGenres] = useState(null);
   const [filterBooks, setFilterBooks] = useState(null)
+  const client = useApolloClient();
 
   useEffect(() => {
     if (result.data) {
@@ -24,16 +25,31 @@ const Books = (props) => {
     }
   }, [result.data])
 
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: dataInStore.allBooks.concat(addedBook) }
+      })
+    }
+  }
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      alert(`New book added
-      ${subscriptionData.data.bookAdded.title}
-      By ${subscriptionData.data.bookAdded.author.name}
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`New book added
+      ${addedBook.title}
+      By ${addedBook.author.name}
       `)
+      updateCacheWith(addedBook)
     }
   })
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
