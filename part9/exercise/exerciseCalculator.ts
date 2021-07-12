@@ -3,7 +3,7 @@ interface resultValues {
   trainingDays: number;
   success: boolean;
   rating: number;
-  ratingDescription: String;
+  ratingDescription: string;
   target: number;
   average: number;
 }
@@ -21,18 +21,18 @@ const calculateExercises = (exerciseHours: number[], target: number): resultValu
 
   interface ratingValues {
     rating: number;
-    ratingDescription: String;
+    ratingDescription: string;
   }
 
   const rating = (): ratingValues => {
     if (average < (target / 2)) {
-      return { rating: 1, ratingDescription: "Too bad, try better next time" }
+      return { rating: 1, ratingDescription: "Too bad, try better next time" };
     } else if (average <= (target * 0.75)) {
-      return { rating: 2, ratingDescription: "Not too bad but could be better" }
+      return { rating: 2, ratingDescription: "Not too bad but could be better" };
     } else {
-      return { rating: 3, ratingDescription: "Well done!" }
+      return { rating: 3, ratingDescription: "Well done!" };
     }
-  }
+  };
 
   const ratingResult = rating();
 
@@ -47,10 +47,9 @@ const calculateExercises = (exerciseHours: number[], target: number): resultValu
   };
 
   return result;
-}
+};
 
-//console.log(calculateBmi(Number(process.argv[2]), Number(process.argv[3])))
-const parseArguments = (args: Array<String>) => {
+const parseArguments = (args: Array<string>) => {
   if (args.length < 4) {
     throw new Error('Not enough arguments');
   }
@@ -63,13 +62,13 @@ const parseArguments = (args: Array<String>) => {
     parsedArray.push(Number(args[i]));
   }
   return parsedArray;
-}
+};
 
 try {
   const values: number[] = parseArguments(process.argv);
   console.log(calculateExercises(values.slice(1), values[0]));
-} catch(e) {
-  console.log('Error, something bad happened, message: ', e.message);
+} catch (e) {
+  if (e instanceof Error) {
+    console.log('Error, something bad happened, message: ', e.message);
+  }
 }
-
-//console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
