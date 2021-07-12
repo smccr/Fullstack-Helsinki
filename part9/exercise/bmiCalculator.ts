@@ -1,4 +1,4 @@
-const calculateBmi = (height : number, weight : number) : String => {
+export const calculateBmi = (height : number, weight : number) : String  => {
   const bmi = weight / Math.pow(height / 100, 2);
   console.log('bmi', bmi)
   if(bmi < 16) {
@@ -15,11 +15,7 @@ const calculateBmi = (height : number, weight : number) : String => {
     return "Obese (Class I)";
   } else if(bmi >= 35 && bmi < 40) {
     return "Obese (Class II)";
-  } else if(bmi >= 40) {
+  } else {
     return "Obese (Class III)";
   }
 }
-
-console.log(calculateBmi(Number(process.argv[2]), Number(process.argv[3])))
-
-//console.log(calculateBmi(180, 74))
