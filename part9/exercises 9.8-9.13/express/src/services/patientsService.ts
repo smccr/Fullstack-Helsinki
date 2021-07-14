@@ -1,7 +1,7 @@
 import patientsData from '../../data/patients.json';
 import {v1 as uuid} from 'uuid';
 
-import { NonSsnPatient, Patient } from '../types';
+import { NonSsnPatient, Patient, NewPatient } from '../types';
 
 const patients: Array<Patient> = patientsData;
 
@@ -16,14 +16,10 @@ const getAllPatients = () : Array<NonSsnPatient> => {
 };
 
 
-const addPatient = (name: string, dateOfBirth: string, ssn: string, gender : string, occupation: string) : Patient => {
+const addPatient = (patient : NewPatient) : Patient => {
   const newPatient = {
     id: uuid(),
-    name,
-    dateOfBirth,
-    ssn,
-    gender,
-    occupation
+    ...patient
   };
 
   patients.push(newPatient);
