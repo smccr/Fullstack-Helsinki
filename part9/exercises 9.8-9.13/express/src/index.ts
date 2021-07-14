@@ -5,11 +5,7 @@ import patientsRouter from './routes/patients';
 
 import cors from 'cors';
 
-const options : cors.CorsOptions = {
-  allowedHeaders: ['Access-Control-Allow-Origin']
-};
-
-app.use(cors(options));
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/diagnoses', diagnoseRouter);
