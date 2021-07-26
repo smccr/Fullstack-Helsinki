@@ -6,7 +6,7 @@ interface courseParts {
 
 const Total = ({parts} : { parts: courseParts[]; } ) =>
   (<>
-    Number of exercises:
+    Number of exercises: {" "}
     {parts.reduce((carry, part) => carry + part.exerciseCount, 0)}
   </>);
 
