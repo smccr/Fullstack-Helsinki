@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { Header, Icon } from "semantic-ui-react";
+import { Card, Header, Icon } from "semantic-ui-react";
 
 import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
@@ -8,6 +8,8 @@ import { apiBaseUrl } from "../constants";
 import { useParams } from "react-router";
 
 import { useStateValue, getPatient, setDiagnosisList } from "../state";
+
+import EntryDetails from "./EntryDetails";
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,14 +51,12 @@ const PatientDetail = () => {
       date of birth: {patient?.dateOfBirth} <br />
 
       <h3>Entries</h3>
+      {patient.entries.length === 0 && <p>No entries found</p>}
       {patient.entries.map(entry => (
         <div key={entry.id}>
-          {entry.date} {entry.description}
-          <ul>
-            {entry.diagnosisCodes?.map(diagnosisCode => (
-              <li key={diagnosisCode}>{diagnosisCode} {diagnoses[diagnosisCode]?.name}</li>
-            ))}
-          </ul>
+          <Card.Group>
+          <EntryDetails entry={entry} diagnoses={diagnoses}/>
+          </Card.Group>
         </div>
       ))}
     </div>
