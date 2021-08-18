@@ -2,22 +2,24 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { Header, Icon } from "semantic-ui-react";
 
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 
 import { useParams } from "react-router";
 
-import { useStateValue, getPatient } from "../state";
+import { useStateValue, getPatient, setDiagnosisList } from "../state";
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patient, diagnoses }, dispatch] = useStateValue();
 
   useEffect(() => {
     const fetchPatient = async () => {
       try {
         const { data: patientData } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
+        const { data: diagnosesData } = await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
         dispatch(getPatient(patientData));
+        dispatch(setDiagnosisList(diagnosesData));
       } catch (e) {
         console.error(e);
       }
@@ -51,8 +53,8 @@ const PatientDetail = () => {
         <div key={entry.id}>
           {entry.date} {entry.description}
           <ul>
-            {entry.diagnosisCodes?.map(diagnosis => (
-              <li key={diagnosis}>{diagnosis}</li>
+            {entry.diagnosisCodes?.map(diagnosisCode => (
+              <li key={diagnosisCode}>{diagnosisCode} {diagnoses[diagnosisCode]?.name}</li>
             ))}
           </ul>
         </div>
