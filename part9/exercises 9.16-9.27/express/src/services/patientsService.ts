@@ -18,8 +18,9 @@ const getAllPatients = () : Array<PublicPatient> => {
 
 const addPatient = (patient : NewPatient) : Patient => {
   const newPatient = {
+    ...patient,
     id: uuid(),
-    ...patient
+    entries: [],
   };
 
   patients.push(newPatient);

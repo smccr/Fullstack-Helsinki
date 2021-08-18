@@ -12,7 +12,7 @@ import { useStateValue, getPatient } from "../state";
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patient }, dispatch] = useStateValue();
-  
+
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -27,7 +27,7 @@ const PatientDetail = () => {
   }, [id]);
 
   const getGenderIcon = () => {
-    switch(patient.gender) {
+    switch (patient.gender) {
       case "male":
         return (<Icon fitted name="mars" />);
       case "female":
@@ -45,6 +45,18 @@ const PatientDetail = () => {
       ssn: {patient?.ssn} <br />
       occupation: {patient?.occupation} <br />
       date of birth: {patient?.dateOfBirth} <br />
+
+      <h3>Entries</h3>
+      {patient.entries.map(entry => (
+        <div key={entry.id}>
+          {entry.date} {entry.description}
+          <ul>
+            {entry.diagnosisCodes?.map(diagnosis => (
+              <li key={diagnosis}>{diagnosis}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 };
