@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import express from 'express';
 
 import patientsService from '../services/patientsService';
-import toNewPatient from '../utils';
+import {toNewPatient, toNewPatientEntry } from '../utils';
 
 
 const router = express.Router();
@@ -29,6 +30,17 @@ router.get('/:id', (req, res) => {
     const patient = patientsService.getPatient(id);
     res.json(patient);
   } catch (e) {
+    res.status(400).json(e.message);
+  }
+});
+
+router.post('/:id/entries', (req, res) => {
+  try {
+    const id = req.params.id;
+    const newEntry = toNewPatientEntry(req.body);
+    const newEntryAdded = patientsService.addPatientEntry(newEntry, id);
+    res.json(newEntryAdded);
+  } catch(e) {
     res.status(400).json(e.message);
   }
 });
