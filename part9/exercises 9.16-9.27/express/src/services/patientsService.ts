@@ -31,6 +31,7 @@ const addPatientEntry = (entry : Entry, id : string) : Entry => {
   const findPatient = patients.find(patient => patient.id === id);
   const newEntry = {
     ...entry,
+    date: new Date().toISOString().slice(0, 10),
     id: uuid()
   };
 

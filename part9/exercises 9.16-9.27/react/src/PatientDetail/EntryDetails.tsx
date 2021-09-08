@@ -10,13 +10,13 @@ const assertNever = (value: never): never => {
 
 const heartColor = (rating: number) => {
   switch (rating) {
-    case 0:
-      return <Icon name="heart" color="green" />;
     case 1:
-      return <Icon name="heart" color="yellow" />;
+      return <Icon name="heart" color="green" />;
     case 2:
-      return <Icon name="heart" color="orange" />;
+      return <Icon name="heart" color="yellow" />;
     case 3:
+      return <Icon name="heart" color="orange" />;
+    case 4:
       return <Icon name="heart" color="red" />;
   }
 };

@@ -39,21 +39,6 @@ const parseEmployerName = (employer: unknown) : string => {
   return employer;
 };
 
-// const isDiagnoseCode = (param: any) : param is string[] => {
-//   return param.every(p => isString(p));
-// };
-
-// const parseDiagnosisCodes = (codes: unknown): Array<Diagnose['code']> => {
-//   if(!codes || !Array.isArray(codes) || !codes.every(code => isString(code))){
-//     throw new Error('Incorrect or missing codes');
-//   }
-//   return codes;
-// };
-
-
-
-
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isHealthRating = (param: any): param is HealthCheckRating => {
   return Object.values(HealthCheckRating).includes(param);
@@ -69,13 +54,6 @@ const parseHealthRating = (healthRating: unknown) : HealthCheckRating => {
 const isDate = (date : string) : boolean => {
   return Boolean(Date.parse(date));
 };
-
-/*
-const isEntry = (entry : unknown) : entry is Array<Entry> => {
-  console.log(typeof entry);
-  return true; // fix this
-};
-*/
 
 const parseDate = (date: unknown) : string => {
   if(!date || !isString(date) || !isDate(date)) {
@@ -110,17 +88,6 @@ const parseOccupation = (occupation: unknown) : string => {
   return occupation;
 };
 
-/*
-const parseEntries = (entries: unknown) : Array<Entry> => {
-  if(!entries || !isEntry(entries) ) {
-    throw new Error('Incorrect or missing entries');
-  }
-  return entries;
-};
-*/
-
-
-
 type newPatientFields = {
   name: unknown,
   dateOfBirth: unknown,
@@ -153,7 +120,7 @@ export const toNewPatientEntry = (entry: Entry) : Entry => {
       const healthCheckNewEntry : Entry = {
         type: entry.type,
         id: "",
-        date: parseDate(entry.date),
+        date: "",
         specialist: parseSpecialist(entry.specialist),
         description: parseDescription(entry.description),
         healthCheckRating: parseHealthRating(entry.healthCheckRating)
@@ -170,7 +137,7 @@ export const toNewPatientEntry = (entry: Entry) : Entry => {
       const occupationalHealthEntry : Entry = {
         type: entry.type,
         id: "",
-        date: parseDate(entry.date),
+        date: "",
         specialist: parseSpecialist(entry.specialist),
         description: parseDescription(entry.description),
         employerName: parseEmployerName(entry.employerName)

@@ -1,19 +1,48 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { Card, Header, Icon } from "semantic-ui-react";
+import { Card, Header, Icon, Button } from "semantic-ui-react";
 
-import { Patient, Diagnosis } from "../types";
+import { Patient, Diagnosis, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 
 import { useParams } from "react-router";
 
-import { useStateValue, getPatient, setDiagnosisList } from "../state";
+import { useStateValue, getPatient, setDiagnosisList, addEntry } from "../state";
 
 import EntryDetails from "./EntryDetails";
+
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
+import AddEntryModal from "../AddEntryModal";
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patient, diagnoses }, dispatch] = useStateValue();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const newValues = {...values, healthCheckRating: Number(values.healthCheckRating)};
+
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        newValues
+      );
+
+      dispatch(addEntry(newEntry));
+      closeModal();
+    } catch (e) {
+      console.error(e.response?.data || 'Unknown Error');
+      setError(e.response?.data?.error || 'Unknown error');
+    }
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -51,6 +80,16 @@ const PatientDetail = () => {
       date of birth: {patient?.dateOfBirth} <br />
 
       <h3>Entries</h3>
+      <Button onClick={() => openModal()}>Add New Entry</Button>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
+
+
+
       {patient.entries.length === 0 && <p>No entries found</p>}
       {patient.entries.map(entry => (
         <div key={entry.id}>
