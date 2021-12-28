@@ -23,11 +23,11 @@ router.get('/:id', blogFinder, async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const body = req.body;
-    const newBlog = {...body, date: Date.now() };
+    const newBlog = { ...body, date: Date.now() };
     const blog = await Blog.create(newBlog);
-    
+
     return res.json(blog);
-  } catch(error) {
+  } catch (error) {
     return res.status(400).json({ error });
   }
 });
@@ -36,6 +36,16 @@ router.delete('/:id', blogFinder, async (req, res) => {
   if (req.blog) {
     await req.blog.destroy();
     return res.sendStatus(204);
+  } else {
+    return res.sendStatus(400);
+  }
+});
+
+router.put('/:id', blogFinder, async (req, res) => {
+  if (req.blog) {
+    req.blog.likes = req.blog.likes + 1;
+    await req.blog.save();
+    res.json(req.blog);
   } else {
     return res.sendStatus(400);
   }
