@@ -12,7 +12,6 @@ User.init({
   },
   username: {
     type: DataTypes.STRING,
-    unique: true,
     allowNull: false
   },
   name: {
@@ -23,7 +22,8 @@ User.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'user'
+  modelName: 'user',
+  indexes: [{ unique: true, fields: ['username'] }]
 })
 
 module.exports = User;
