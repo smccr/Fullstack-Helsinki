@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
 const { Blog } = require('../models');
+const { User } = require('../models');
+const { tokenExtractor } = require('../util/middleware');
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id);
@@ -20,12 +22,14 @@ router.get('/:id', blogFinder, async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-    const body = req.body;
-    const newBlog = { ...body, date: Date.now() };
-    const blog = await Blog.create(newBlog);
+router.post('/', tokenExtractor, async (req, res) => {
+  const { body } = req;
+  const { id } = req.decodedToken;
+  const user = await User.findByPk(id);
+  const newBlog = { ...body, date: Date.now(), userId: user.id };
+  const blog = await Blog.create(newBlog);
 
-    return res.json(blog);
+  return res.json(blog);
 });
 
 router.delete('/:id', blogFinder, async (req, res) => {
