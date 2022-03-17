@@ -32,10 +32,17 @@ router.post('/', tokenExtractor, async (req, res) => {
   return res.json(blog);
 });
 
-router.delete('/:id', blogFinder, async (req, res) => {
+router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
   if (req.blog) {
-    await req.blog.destroy();
-    return res.sendStatus(204);
+    const userId = req.decodedToken.id;
+      const blogUserId = req.blog.userId;
+
+      if (blogUserId === userId) {
+        await req.blog.destroy();
+        return res.sendStatus(204);
+      } else {
+        return res.sendStatus(403);
+      }
   } else {
     return res.sendStatus(400);
   }
@@ -50,5 +57,6 @@ router.put('/:id', blogFinder, async (req, res) => {
     return res.sendStatus(400);
   }
 });
+
 
 module.exports = router;
